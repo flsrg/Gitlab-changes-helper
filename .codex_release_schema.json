@@ -1,0 +1,16 @@
+{
+  "type": "object",
+  "properties": {
+    "changelog_csv": {
+      "type": "string"
+    },
+    "tests_csv": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "changelog_csv",
+    "tests_csv"
+  ],
+  "additionalProperties": false
+}

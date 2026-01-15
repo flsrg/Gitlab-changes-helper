@@ -1,0 +1,29 @@
+SUB,API 23,API 25,API 27,API 28,API 29,API 30,API 31,API 33,API 34,API 35,API 36
+update from old version,,,,,,,,,,,
+install clean + launch,,,,,,,,,,,
+upgrade from previous version (v1.37) preserves data,,,,,,,,,,,
+app health smoke,,,,,,,,,,,
+open main app + navigate between screens,,,,,,,,,,,
+open settings + return to main,,,,,,,,,,,
+SDK / build / install,,,,,,,,,,,
+app builds with Gradle/AGP updates,,,,,,,,,,,TBD,TBD
+install on API 35/36 (targetSdk 35) and launch,,,,,,,,,,,TBD,TBD
+UI edge-to-edge / system bars,,,,,,,,,,,
+WelcomeActivity layout looks correct (no inset overlap),,,,,,,,,,TBD,TBD
+TutorialActivity layout looks correct (no inset overlap),,,,,,,,,,TBD,TBD
+FAQActivity layout looks correct (no inset overlap),,,,,,,,,,TBD,TBD
+LicenseInfoActivity layout looks correct (no inset overlap),,,,,,,,,,TBD,TBD
+SettingsActivity layout looks correct (no inset overlap),,,,,,,,,,TBD,TBD
+Widget,,,,,,,,,,,
+widget renders correctly on home screen (normal state),,,,,,,,,,,,
+widget error layout corners rounded on API 31+,,,,,,,,TBD,TBD,TBD,TBD,TBD
+widget error layout not rounded on API 30-,,,,,,,TBD,TBD,,, 
+Billing,,,,,,,,,,,
+open License Info screen and load purchase info,,,,,,,,,,TBD,TBD,TBD
+start purchase flow and verify product details show,,,,,,,,,,TBD,TBD,TBD
+Permissions / intents,,,,,,,,,,,
+calendar permission request + widget events load,,,,,,,,,,,
+email support without email client shows toast (no crash),,,,,,,,,,TBD,TBD
+Other changes,,,,,,,,,,,
+feedback dialog with attach debug info + email client installed works,,,,,,,,,,,
+CI / release packaging not affected by signing config removal,,,,,,,,,,,

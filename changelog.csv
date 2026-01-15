@@ -1,0 +1,7 @@
+Latest tested version,№,Issue,Merge request
+Revisions comparison: v1.37 → release-1.38,1,Issue wasn't created,!55 Removed signingConfig argument for release build
+,2,Issue wasn't created,!56 Merge release-1.37 into master
+,3,"#74 Bump target API level to 35, update libs and tools",!58 Resolve #74 "Bump target API level to 35, update libs and tools"
+,4,"#78 [billing] Upgrade Google Play Billing Library",!59 Resolve #78 "[billing] Upgrade Google Play Billing Library"
+,5,#77 Error when no email client on the device,!60 Resolve #77 "Error when no email client on the device"
+,6,#76 Corners of the widget error layout are cropped in Android 12,!61 Resolve #76 "Corners of the widget error layout are cropped in Android 12"
