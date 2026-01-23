@@ -50,6 +50,15 @@ class Settings:
     run_codex: bool
 
 
+def output_dir() -> Path:
+    return Path("output")
+
+
+def resolve_output_path(out_file: str) -> Path:
+    out = Path(out_file)
+    return output_dir() / out.name
+
+
 def project_id_for_api(project: str) -> str:
     # numeric id stays as-is; path must be URL-encoded including slashes
     return project if project.isdigit() else quote(project.strip("/"), safe="")
@@ -163,7 +172,8 @@ def wizard() -> Tuple[Settings, str]:
     safe_from = re.sub(r"[^\w\.-]+", "_", from_ref)
     safe_to = re.sub(r"[^\w\.-]+", "_", to_ref)
     out_default = f"changes_{safe_from}_to_{safe_to}.md"
-    out_file = Prompt.ask("Output markdown file", default=out_default).strip()
+    out_file = Prompt.ask("Output markdown file (saved under output/)", default=out_default).strip()
+    out_path = resolve_output_path(out_file)
 
     # Token: prefer env var if present, otherwise prompt (hidden)
     env_token = os.environ.get("GITLAB_TOKEN", "")
@@ -195,7 +205,7 @@ def wizard() -> Tuple[Settings, str]:
     t.add_row("straight", str(straight))
     t.add_row("per_page", str(per_page))
     t.add_row("sleep", str(sleep))
-    t.add_row("out_file", out_file)
+    t.add_row("out_file", str(out_path))
     t.add_row("run_codex", str(run_codex))
     console.print(t)
 
@@ -208,7 +218,7 @@ def wizard() -> Tuple[Settings, str]:
         project=project,
         from_ref=from_ref,
         to_ref=to_ref,
-        out_file=out_file,
+        out_file=str(out_path),
         unidiff=unidiff,
         straight=straight,
         per_page=per_page,
@@ -247,7 +257,8 @@ def run_codex_csv_generation(changes_md_path: str, from_ref: str, to_ref: str) -
         return
 
     md_file = Path(changes_md_path).resolve()
-    workdir = md_file.parent
+    workdir = Path(__file__).resolve().parent
+    md_dir = md_file.parent
 
     # Codex prefers running inside a git repo, but supports --skip-git-repo-check.
     skip_git_repo_check = not (workdir / ".git").exists()
@@ -262,13 +273,14 @@ def run_codex_csv_generation(changes_md_path: str, from_ref: str, to_ref: str) -
         "additionalProperties": False,
     }
 
-    schema_path = workdir / ".codex_release_schema.json"
-    out_json_path = workdir / ".codex_release_output.json"
+    schema_path = md_dir / ".codex_release_schema.json"
+    out_json_path = md_dir / ".codex_release_output.json"
 
     schema_path.write_text(json.dumps(schema, ensure_ascii=False, indent=2), encoding="utf-8")
 
     prompt = f"""
-Read the file: {md_file.name}
+Read the file at path: {md_file}
+Ensure you read the entire file through the final "## End of report" marker. If needed, read in chunks.
 
 Task:
 1) Produce changelog.csv as CSV text with header:
@@ -362,8 +374,8 @@ No extra keys, no markdown fences.
     changelog_csv = str(data["changelog_csv"]).strip() + "\n"
     tests_csv = str(data["tests_csv"]).strip() + "\n"
 
-    (workdir / "changelog.csv").write_text(changelog_csv, encoding="utf-8")
-    (workdir / "tests.csv").write_text(tests_csv, encoding="utf-8")
+    (md_dir / "changelog.csv").write_text(changelog_csv, encoding="utf-8")
+    (md_dir / "tests.csv").write_text(tests_csv, encoding="utf-8")
 
     console.print("[green]Generated:[/green] changelog.csv, tests.csv")
 
@@ -739,7 +751,10 @@ def main():
 
                 lines.append("---\n")
 
+    lines.append("## End of report\n")
+
     # Write report
+    output_dir().mkdir(parents=True, exist_ok=True)
     with open(settings.out_file, "w", encoding="utf-8") as f:
         f.write("\n".join(lines))
 
